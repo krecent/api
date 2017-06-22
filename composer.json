@@ -1,11 +1,11 @@
 {
-    "name": "krecent/auth-api",
-    "description": "Krecent wrapper for users auth using an api",
+    "name": "krecent/api",
+    "description": "Krecent wrapper for using Krecent api",
     "keywords": [
-        "krecent","auth",
+        "krecent",
         "api"
     ],
-    "homepage": "https://bitbucket.com/krecent/krecent-auth",
+    "homepage": "https://bitbucket.com/krecent/api",
     "license": "MIT",
     "authors": [
         {

@@ -4,7 +4,7 @@ namespace Krecent;
 
 use Krecent\Curl as Curl;
 
-class AuthApi
+class Api
 {
 	private $url;
 	private $username;
