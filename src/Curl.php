@@ -4,30 +4,30 @@ namespace Krecent;
 
 class Curl
 {
-	const CONNECTION_TIMEOUT=30;
-	
-	/*
-	send GET requests
-	@param string $url tp request
-	@param array $get values to send
-	@param array $options for cURL
-	@return string	
-	*/
+    const CONNECTION_TIMEOUT=30;
+    
+    /*
+    send GET requests
+    @param string $url tp request
+    @param array $get values to send
+    @param array $options for cURL
+    @return string  
+    */
 
-	public static function get($url, array $get=array(),array $headers=array())
-	{
-		$defaults = array
-		(
-			CURLOPT_URL => $url . (strpos($url, '?') === FALSE ? '?' : '') . http_build_query($get),
+    public static function get($url, array $get=array(),array $headers=array())
+    {
+        $defaults = array
+        (
+            CURLOPT_URL => $url . (strpos($url, '?') === FALSE ? '?' : '') . http_build_query($get),
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_TIMEOUT => self::CONNECTION_TIMEOUT
-		);
-		return self::send( $defaults);
-	
-	}
-	
-	/**
+        );
+        return self::send( $defaults);
+    
+    }
+    
+    /**
      * Send a POST request using cURL.
      * @param string $url to request
      * @param array $post POST data to send
@@ -38,7 +38,7 @@ class Curl
     {   
         $defaults = array
         (
-            CURLOPT_URL => $url,
+            CURLOPT_URL => $url . (strpos($url, '?') === FALSE ? '?' : '') . http_build_query($post),
             CURLOPT_POST => TRUE,
             CURLOPT_POSTFIELDS => http_build_query($post),
             CURLOPT_HTTPHEADER => $headers,
@@ -46,7 +46,7 @@ class Curl
             CURLOPT_TIMEOUT => self::CONNECTION_TIMEOUT
         );
         
-		return self::send( $defaults);
+        return self::send( $defaults);
     }
     
     /**
@@ -68,7 +68,7 @@ class Curl
             CURLOPT_TIMEOUT => self::CONNECTION_TIMEOUT
         );
         
-		return self::send( $defaults);
+        return self::send( $defaults);
     }
     
     /**
@@ -90,7 +90,7 @@ class Curl
             CURLOPT_TIMEOUT => self::CONNECTION_TIMEOUT
         );
         
-		return self::send( $defaults);
+        return self::send( $defaults);
     }
     
     /**
@@ -108,6 +108,7 @@ class Curl
 
         for($i = 0; $i < 4; $i++){
             $response = curl_exec($ch);
+            // dd($response);
             if ($response !== FALSE){
                 break;
              }
@@ -118,6 +119,7 @@ class Curl
         
         // Fetch response headers, etc.
         $info = curl_getinfo($ch);
+        // dd($info);
         
         curl_close($ch);        
         

@@ -1,4 +1,4 @@
-<? php
+<?php
 
 namespace Krecent; 
 
@@ -9,19 +9,19 @@ class Api
 	private $url;
 	private $username;
 	private $password;
-	function __construct($url)
-	{
-		$this->url = $url;
-	}
+	// function __construct($url)
+	// {
+	// 	$this->url = $url;
+	// }
 	/**
 	 * undocumented function
 	 *
 	 * @return void
 	 * @author 
 	 **/
-	public function getUser($username , $password , $userAgent)
+	public function getUser($username , $password)
 	{
-		$url =  $this->url . $username;
+		$url = "http://localhost:8000/api/auth/v1/users" ."/". $username;
 		$get = [
 				 'user_password' => $password,
 				];
@@ -30,9 +30,19 @@ class Api
 					'User-Agent: Mozilla/5.0 (Windows NT 10.0)',
 					'x-api-key: aupQj8k2YDjHOuXvacmI',
 					];
-		$response = Curl::get($url,$get,$headers);
+		$request = Curl::get($url,$get,$headers);
 
-		return $response;
+		$response = json_decode($request->response, true);
+        if(isset($response["data"])){
+        	$userArray = array('krc_user_id' => $response["data"]["id"], 'username' => $response["data"]["attributes"]["username"]);
+            return $userArray;
+         }elseif (isset($response["errors"])) {
+            return $response["errors"][0]["code"];
+         }else{
+            return false;
+         }
+
+		// return $response;
 	}
 
 	/**
@@ -41,23 +51,36 @@ class Api
 	 * @return void
 	 * @author 
 	 **/
-	public function setUser($email , $username , $password ,$registered_with )
+	public function setUser(
+		$username,
+        $password, 
+        $email, 
+        $registered_with)
 	{
-		$url =  $this->url;
+		
+		$url =  "http://localhost:8000/api/auth/v1/users";
 		$post = [
 				 'email_address' => $email,
-				 'username' => $username, 
-				 'user_password' => $password,
+				 'username' => $username,
 				 'registered_with' => $registered_with,
+				 'user_password' => $password				 
 				];
 		$headers = [
 					'Content-Type: application/vnd.api+json',
-					'User-Agent: Mozilla/5.0 (Windows NT 10.0)',
+					'User-Agent: Windows NT 10.0',
 					'x-api-key: aupQj8k2YDjHOuXvacmI',
 					];
-		$response = Curl::post($url,$post,$headers);
+		$request = Curl::post($url,$post,$headers);
 
-		return $response;
+		$response = json_decode($request->response, true);
+		if(isset($response["data"])){
+        	$userArray = array('krc_user_id' => $response["data"]["id"], 'username' => $response["data"]["attributes"]["username"]);
+            return $userArray;
+         }elseif (isset($response["errors"])) {
+            return $response["errors"][0]["code"];
+         }else{
+            return false;
+         }
 
 	}
 }
