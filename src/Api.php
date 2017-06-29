@@ -7,49 +7,62 @@ use Krecent\Curl as Curl;
 class Api
 {
 	private $url;
-	private $username;
-	private $password;
-	// function __construct($url)
-	// {
-	// 	$this->url = $url;
-	// }
+	private $userAgent;
+	private $apiKey;
+	function __construct($url , $userAgent, $apiKey)
+	{
+		$this->url = $url;
+		$this->apiKey = $apiKey;
+		$this->userAgent = $userAgent;
+	}
 	/**
-	 * undocumented function
+	 * Get the user instance for an existing user , else get necessary error response
 	 *
-	 * @return void
-	 * @author 
+	 *
+	 * @param string $username unique name identifier for user
+	 * @param string $password unique key to authenticate a user
+	 * @return array
+	 * @Waheed Derby 
 	 **/
 	public function getUser($username , $password)
 	{
-		$url = "http://localhost:8000/api/auth/v1/users" ."/". $username;
+		$url = $this->url ."/". $username;
 		$get = [
 				 'user_password' => $password,
 				];
 		$headers = [
 					'Content-Type: application/vnd.api+json',
-					'User-Agent: Mozilla/5.0 (Windows NT 10.0)',
-					'x-api-key: aupQj8k2YDjHOuXvacmI',
+					"User-Agent: $this->userAgent",
+					"x-api-key: $this->apiKey",
 					];
 		$request = Curl::get($url,$get,$headers);
-
 		$response = json_decode($request->response, true);
         if(isset($response["data"])){
         	$userArray = array('krc_user_id' => $response["data"]["id"], 'username' => $response["data"]["attributes"]["username"]);
             return $userArray;
          }elseif (isset($response["errors"])) {
-            return $response["errors"][0]["code"];
+            	if(isset($response["errors"][0]["code"])){
+            		return $response["errors"][0];
+            	}else{
+            		return $response["errors"][0];
+            	}
          }else{
             return false;
          }
 
-		// return $response;
 	}
 
 	/**
-	 * undocumented function
+	 * Set instance for a new user ,  ensure all required parameters are submitted else,
+	 * return a error response and info 
 	 *
-	 * @return void
-	 * @author 
+	 *
+	 * @param string $username unique name identifier for user
+	 * @param string $password unique key to authenticate a user
+	 * @param string $email user email address to confirm user
+	 * @param string $registered_with service used to register for the platform
+	 * @return array
+	 * @Waheed Derby 
 	 **/
 	public function setUser(
 		$username,
@@ -58,7 +71,7 @@ class Api
         $registered_with)
 	{
 		
-		$url =  "http://localhost:8000/api/auth/v1/users";
+		$url =  $this->url;
 		$post = [
 				 'email_address' => $email,
 				 'username' => $username,
@@ -67,17 +80,20 @@ class Api
 				];
 		$headers = [
 					'Content-Type: application/vnd.api+json',
-					'User-Agent: Windows NT 10.0',
-					'x-api-key: aupQj8k2YDjHOuXvacmI',
+					"User-Agent: $this->userAgent",
+					"x-api-key: $this->apiKey",
 					];
 		$request = Curl::post($url,$post,$headers);
-
 		$response = json_decode($request->response, true);
 		if(isset($response["data"])){
         	$userArray = array('krc_user_id' => $response["data"]["id"], 'username' => $response["data"]["attributes"]["username"]);
             return $userArray;
          }elseif (isset($response["errors"])) {
-            return $response["errors"][0]["code"];
+            	if(isset($response["errors"][0]["code"])){
+            		return $response["errors"][0];
+            	}else{
+            		return $response["errors"][0];
+            	}
          }else{
             return false;
          }
